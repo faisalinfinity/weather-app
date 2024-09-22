@@ -1,12 +1,12 @@
 import React from 'react';
 import { Grid } from '@mui/material';
-import { getWeekDays } from '../../utilities/DatetimeUtils';
-import { weatherIcon } from '../../utilities/IconsUtils';
+import { getWeekDays } from '../utils/date-time';
+import { weatherIcon } from '../utils/icons';
 import WeeklyForecastItem from './WeeklyForecastItem';
-import ErrorBox from '../Reusable/ErrorBox';
+import ErrorBox from './ErrorBox';
 import UnfedForecastItem from './UnfedForecastItem';
 import DayWeatherDetails from './DayWeatherDetails';
-import Layout from '../Reusable/Layout';
+import Layout from './Layout';
 
 const WeeklyForecast = ({ data }) => {
   const forecastDays = getWeekDays();
