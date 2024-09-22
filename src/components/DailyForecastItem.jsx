@@ -1,6 +1,6 @@
 import { Box, Typography } from '@mui/material';
 import React from 'react';
-import { weatherIcon } from '../../../utilities/IconsUtils';
+import { weatherIcon } from '../utils/icons';
 
 const DailyForecastItem = (props) => {
   return (
@@ -50,7 +50,7 @@ const DailyForecastItem = (props) => {
             margin: '0 auto',
           }}
           alt="weather"
-          src={weatherIcon(`${props.data.weather[0].icon}.png`)}
+          src={`/assets/icons/${props.data.weather[0].icon}.png`}
         />
       </Box>
       <Typography

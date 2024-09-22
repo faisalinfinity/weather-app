@@ -1,12 +1,12 @@
 import React from 'react';
 import { Grid } from '@mui/material';
-import { getDayMonthFromDate } from '../../../utilities/DatetimeUtils';
-import { weatherIcon } from '../../../utilities/IconsUtils';
-import ErrorBox from '../../Reusable/ErrorBox';
+import { getDayMonthFromDate } from '../utils/date-time';
+import { weatherIcon } from '../utils/icons';
+import ErrorBox from './ErrorBox';
 import CityDateDetail from './CityDateDetail';
 import TemperatureWeatherDetail from './TemperatureWeatherDetail';
 import WeatherIconDetail from './WeatherIconDetail';
-import Layout from '../../Reusable/Layout';
+import Layout from './Layout';
 
 const dayMonth = getDayMonthFromDate();
 
@@ -50,7 +50,7 @@ const Details = ({ data }) => {
             height: '80px',
           }}
         >
-          <WeatherIconDetail src={weatherIcon(`${data.weather[0].icon}.png`)} />
+          <WeatherIconDetail src={`/assets/icons/${data.weather[0].icon}.png`} />
         </Grid>
       </>
     );

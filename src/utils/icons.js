@@ -15,7 +15,7 @@ function importAll(r) {
   
     const iconsValues = Object.values(allWeatherIcons);
     const iconIndex = iconsKeys.indexOf(imageName);
-  
+    console.log(iconsKeys, iconsValues, iconIndex,imageName)
     return iconsValues[iconIndex];
   }
   

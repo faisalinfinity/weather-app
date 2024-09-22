@@ -3,7 +3,7 @@ import React from 'react';
 import ThermostatIcon from '@mui/icons-material/Thermostat';
 import AirIcon from '@mui/icons-material/Air';
 import FilterDramaIcon from '@mui/icons-material/FilterDrama';
-import { ReactComponent as HumidityIcon } from '../../../assets/humidity.svg';
+import HumidityIcon from "../../public/assets/humidity.svg"
 
 const AirConditionsItem = (props) => {
   let iconContent;

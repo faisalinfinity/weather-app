@@ -1,8 +1,8 @@
 import React from 'react';
 import { Grid, Typography } from '@mui/material';
 import DailyForecastItem from './DailyForecastItem';
-import ErrorBox from '../../Reusable/ErrorBox';
-import Layout from '../../Reusable/Layout';
+import ErrorBox from './ErrorBox';
+import Layout from './Layout';
 
 const DailyForecast = ({ data, forecastList }) => {
   const noDataProvided =

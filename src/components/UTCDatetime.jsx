@@ -1,6 +1,6 @@
 import { Typography } from '@mui/material';
 import React from 'react';
-import { getUTCDatetime } from '../../utilities/DatetimeUtils';
+import { getUTCDatetime } from '../utils/date-time';
 
 const UTCDatetime = () => {
   const utcFullDate = getUTCDatetime();

@@ -1,7 +1,7 @@
 import React from 'react';
-import ErrorBox from '../../Reusable/ErrorBox';
+import ErrorBox from './ErrorBox';
 import AirConditionsItem from './AirConditionsItem';
-import Layout from '../../Reusable/Layout';
+import Layout from './Layout';
 
 const TodayWeatherAirConditions = ({ data }) => {
   const noDataProvided =

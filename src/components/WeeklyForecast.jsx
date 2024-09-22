@@ -52,7 +52,7 @@ const WeeklyForecast = ({ data }) => {
             >
               <DayWeatherDetails
                 day={forecastDays[idx]}
-                src={weatherIcon(`${item.icon}`)}
+                src={`/assets/icons/${item.icon}`}
                 description={item.description}
               />
 
@@ -118,7 +118,7 @@ const WeeklyForecast = ({ data }) => {
             <UnfedForecastItem
               day={forecastDays[5]}
               value="NaN"
-              src={weatherIcon('unknown.png')}
+              src={`/assets/icons/unknown.png`}
             />
           </Grid>
         )}
