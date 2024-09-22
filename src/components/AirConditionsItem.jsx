@@ -3,7 +3,7 @@ import { Box, Grid, SvgIcon } from "@mui/material";
 import ThermostatIcon from "@mui/icons-material/Thermostat";
 import AirIcon from "@mui/icons-material/Air";
 import FilterDramaIcon from "@mui/icons-material/FilterDrama";
-import HumidityIcon from "../../public/assets/humidity.svg";
+import HumidityIcon from "../svg/humidity.svg";
 
 const iconStyle = { fontSize: "18px" };
 

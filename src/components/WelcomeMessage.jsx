@@ -1,5 +1,5 @@
 import { Box, Typography, SvgIcon } from "@mui/material";
-import SplashIcon from "../../public/assets/splash-icon.svg";
+import SplashIcon from "../svg/splash-icon.svg";
 import { styles } from "../styles/styles";
  const WelcomeMessage = () => (
   <Box sx={styles.welcomeBox}>

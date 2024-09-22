@@ -2,7 +2,7 @@ import { Box, SvgIcon, Typography } from "@mui/material";
 import AirIcon from "@mui/icons-material/Air";
 import FilterDramaIcon from "@mui/icons-material/FilterDrama";
 import ThermostatIcon from "@mui/icons-material/Thermostat";
-import HumidityIcon from "../../public/assets/humidity.svg";
+import HumidityIcon from "../svg/humidity.svg";
 
 const WeeklyForecastItem = ({ value, type }) => {
   let iconContent;
