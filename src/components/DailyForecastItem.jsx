@@ -1,6 +1,6 @@
 import { Box, Typography } from "@mui/material";
 import React from "react";
-import { weatherIcon } from "../utils/icons";
+
 import { useTemperature } from "../context/ToggleTemperature";
 import { celsiusToFahrenheit } from "../utils/data";
 

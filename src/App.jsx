@@ -1,21 +1,20 @@
-import React, { useState, useCallback, useEffect } from "react";
-import { Box, Container, Grid, Link, SvgIcon, Typography } from "@mui/material";
-import GitHubIcon from "@mui/icons-material/GitHub";
+import React, { useState, useCallback, useEffect, lazy, Suspense } from "react";
+import { Container, Grid } from "@mui/material";
 import Search from "./components/Search";
-import WeeklyForecast from "./components/WeeklyForecast";
-import TodayWeather from "./components/TodayWeather";
 import { fetchWeatherData } from "./api/OpenWeatherService";
 import { transformDateFormat } from "./utils/date-time";
-import UTCDatetime from "./components/UTCDatetime";
-import LoadingBox from "./components/LoadingBox";
 import ErrorBox from "./components/ErrorBox";
 import { ALL_DESCRIPTIONS } from "./constants/constants";
 import { getTodayForecastWeather, getWeekForecastWeather } from "./utils/data";
-
-import SplashIcon from "../public/assets/splash-icon.svg";
-import Logo from "/assets/logo.png";
 import { useTemperature } from "./context/ToggleTemperature";
 import ToggleTemperature from "./components/ToggleTemperature";
+import { styles } from "./styles/styles";
+import LoadingMessage from "./components/LoadingMessage";
+import Header from "./components/Header";
+import { useCache } from "./hooks/useCache";
+
+const WeatherContent = lazy(() => import("./components/WeatherContent"));
+const WelcomeMessage = lazy(() => import("./components/WelcomeMessage"));
 
 const App = () => {
   const [weatherData, setWeatherData] = useState({
@@ -25,58 +24,86 @@ const App = () => {
   });
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
-  const { isCelsius, setIsCelsius } = useTemperature();
+  const { isCelsius } = useTemperature();
+  const { getCachedData, setCachedData } = useCache();
 
-  const searchChangeHandler = useCallback(async (enteredData) => {
-    const [latitude, longitude] = enteredData.value.split(" ");
-    getData(latitude, longitude, enteredData.label);
-  }, []);
+  const getData = useCallback(
+    async (latitude, longitude, label) => {
+      setIsLoading(true);
+      setError(null);
+      try {
+        const cachedData = getCachedData(label);
+        if (cachedData) {
+          setWeatherData(cachedData);
+          setIsLoading(false);
+          return;
+        }
 
-  const getData = async (latitude, longitude, label) => {
-    setIsLoading(true);
-    setError(null);
-    try {
-      const [todayWeatherResponse, weekForecastResponse] =
-        await fetchWeatherData(latitude, longitude);
-      const currentDate = transformDateFormat();
-      const dt_now = Math.floor(Date.now() / 1000);
+        const [todayWeatherResponse, weekForecastResponse] =
+          await fetchWeatherData(latitude, longitude);
+        const currentDate = transformDateFormat();
+        const dt_now = Math.floor(Date.now() / 1000);
 
-      const todayForecast = getTodayForecastWeather(
-        weekForecastResponse,
-        currentDate,
-        dt_now
-      );
-      const weekForecast = getWeekForecastWeather(
-        weekForecastResponse,
-        ALL_DESCRIPTIONS
-      );
+        const todayForecast = getTodayForecastWeather(
+          weekForecastResponse,
+          currentDate,
+          dt_now
+        );
+        const weekForecast = getWeekForecastWeather(
+          weekForecastResponse,
+          ALL_DESCRIPTIONS
+        );
 
-      console.log(todayWeatherResponse);
+        const newWeatherData = {
+          todayWeather: { city: label, ...todayWeatherResponse },
+          todayForecast,
+          weekForecast: { city: label, list: weekForecast },
+        };
 
-      setWeatherData({
-        todayWeather: { city: label, ...todayWeatherResponse },
-        todayForecast,
-        weekForecast: { city: label, list: weekForecast },
-      });
-    } catch (err) {
-      setError("Failed to fetch weather data. Please try again.");
-    } finally {
-      setIsLoading(false);
-    }
-  };
+        setWeatherData(newWeatherData);
+        setCachedData(label, newWeatherData);
+      } catch (err) {
+        setError("Failed to fetch weather data. Please try again.");
+      } finally {
+        setIsLoading(false);
+      }
+    },
+    [getCachedData, setCachedData]
+  );
+
+  const searchChangeHandler = useCallback(
+    (enteredData) => {
+      const [latitude, longitude] = enteredData.value.split(" ");
+      getData(latitude, longitude, enteredData.label);
+    },
+    [getData]
+  );
 
   useEffect(() => {
-    const newDelhiCoordinates = {
-      latitude: 28.6139,
-      longitude: 77.209,
-      label: "New Delhi, IN",
-    };
-    getData(
-      newDelhiCoordinates.latitude,
-      newDelhiCoordinates.longitude,
-      newDelhiCoordinates.label
+    const lastSearched = localStorage.getItem("lastSearched");
+    if (lastSearched) {
+      const { latitude, longitude, label } = JSON.parse(lastSearched);
+      getData(latitude, longitude, label);
+    } else {
+      const newDelhiCoordinates = {
+        latitude: 28.6139,
+        longitude: 77.209,
+        label: "New Delhi, IN",
+      };
+      getData(
+        newDelhiCoordinates.latitude,
+        newDelhiCoordinates.longitude,
+        newDelhiCoordinates.label
+      );
+    }
+  }, [getData]);
+
+  useEffect(() => {
+    const { latitude, longitude, label } = JSON.parse(
+      localStorage.getItem("lastSearched") || "{}"
     );
-  }, []);
+    getData(latitude, longitude, label);
+  }, [getData]);
 
   const renderContent = () => {
     if (isLoading) return <LoadingMessage />;
@@ -85,8 +112,16 @@ const App = () => {
         <ErrorBox margin="3rem auto" flex="inherit" errorMessage={error} />
       );
     if (weatherData.todayWeather)
-      return <WeatherContent weatherData={weatherData} />;
-    return <WelcomeMessage />;
+      return (
+        <Suspense fallback={<LoadingMessage />}>
+          <WeatherContent weatherData={weatherData} />
+        </Suspense>
+      );
+    return (
+      <Suspense fallback={<LoadingMessage />}>
+        <WelcomeMessage />
+      </Suspense>
+    );
   };
 
   return (
@@ -101,130 +136,6 @@ const App = () => {
       </Grid>
     </Container>
   );
-};
-
-const Header = () => (
-  <Box sx={styles.header}>
-    <Box component="img" sx={styles.logo} alt="logo" src={Logo} />
-    <UTCDatetime />
-    <Link
-      href="https://github.com/Amin-Awinti"
-      target="_blank"
-      underline="none"
-      sx={styles.githubLink}
-    >
-      <GitHubIcon sx={styles.githubIcon} />
-    </Link>
-  </Box>
-);
-
-const LoadingMessage = () => (
-  <Box sx={styles.loadingBox}>
-    <LoadingBox value="1">
-      <Typography variant="h3" component="h3" sx={styles.loadingText}>
-        Loading...
-      </Typography>
-    </LoadingBox>
-  </Box>
-);
-
-const WelcomeMessage = () => (
-  <Box sx={styles.welcomeBox}>
-    <SvgIcon
-      component={SplashIcon}
-      inheritViewBox
-      sx={{ fontSize: { xs: "100px", sm: "120px", md: "140px" } }}
-    />
-    {/* <SplashIcon  sx={styles.splashIcon} /> */}
-    <Typography variant="h4" component="h4" sx={styles.welcomeText}>
-      Explore current weather data and 6-day forecast of more than 200,000
-      cities!
-    </Typography>
-  </Box>
-);
-
-const WeatherContent = ({ weatherData }) => (
-  <React.Fragment>
-    <Grid item xs={12} md={6}>
-      <TodayWeather
-        data={weatherData.todayWeather}
-        forecastList={weatherData.todayForecast}
-      />
-    </Grid>
-    <Grid item xs={12} md={6}>
-      <WeeklyForecast data={weatherData.weekForecast} />
-    </Grid>
-  </React.Fragment>
-);
-
-const styles = {
-  container: {
-    maxWidth: { xs: "100%", sm: "80%", md: "1100px" },
-    width: "100%",
-    height: "100%",
-    margin: "0 auto",
-    padding: "1rem 0 3rem 1rem",
-    marginBottom: "1rem",
-    borderRadius: { xs: "none", sm: "0 0 1rem 1rem" },
-    boxShadow: {
-      xs: "none",
-      sm: "rgba(0,0,0, 0.5) 0px 10px 15px -3px, rgba(0,0,0, 0.5) 0px 4px 6px -2px",
-    },
-    background: "rgba(255, 255, 255, 0.1)",
-    backdropFilter: "blur(8px)",
-    border: "1px solid rgba(255, 255, 255, 0.2)",
-  },
-  header: {
-    display: "flex",
-    justifyContent: "space-between",
-    alignItems: "center",
-    width: "100%",
-    marginBottom: "1rem",
-  },
-  logo: {
-    height: { xs: "16px", sm: "22px", md: "26px" },
-    width: "auto",
-  },
-  githubLink: { display: "flex" },
-  githubIcon: {
-    fontSize: { xs: "20px", sm: "22px", md: "26px" },
-    color: "white",
-    "&:hover": { color: "#2d95bd" },
-  },
-  loadingBox: {
-    display: "flex",
-    justifyContent: "center",
-    alignItems: "center",
-    width: "100%",
-    minHeight: "500px",
-  },
-  loadingText: {
-    fontSize: { xs: "10px", sm: "12px" },
-    color: "rgba(255, 255, 255, .8)",
-    lineHeight: 1,
-    fontFamily: "Poppins",
-  },
-  welcomeBox: {
-    xs: 12,
-    display: "flex",
-    flexDirection: "column",
-    alignItems: "center",
-    justifyContent: "center",
-    width: "100%",
-    minHeight: "500px",
-  },
-  splashIcon: {
-    fontSize: { xs: "100px", sm: "120px", md: "150px" },
-  },
-  welcomeText: {
-    fontSize: { xs: "12px", sm: "14px" },
-    color: "rgba(255,255,255, .85)",
-    fontFamily: "Poppins",
-    textAlign: "center",
-    margin: "2rem 0",
-    maxWidth: "80%",
-    lineHeight: "22px",
-  },
 };
 
 export default App;

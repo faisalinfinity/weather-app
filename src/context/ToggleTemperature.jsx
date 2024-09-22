@@ -2,7 +2,7 @@ import React, { useContext, useState } from 'react';
 const ToggleTemperatureContext = React.createContext(); 
 
 const ToggleTemperatureProvider = (props) => {
-    const [isCelsius, setIsCelsius] = useState(false);
+    const [isCelsius, setIsCelsius] = useState(true);
 
   return (
     <ToggleTemperatureContext.Provider value={{ isCelsius, setIsCelsius }}>

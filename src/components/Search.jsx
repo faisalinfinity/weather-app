@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback, useRef } from "react";
+import { useState, useEffect, useCallback, useRef } from "react";
 import {
   TextField,
   Paper,
@@ -12,7 +12,7 @@ import { styled } from "@mui/material/styles";
 import SearchIcon from "@mui/icons-material/Search";
 import { fetchCities } from "../api/OpenWeatherService";
 
-const SearchContainer = styled("div")(({ theme }) => ({
+const SearchContainer = styled("div")(() => ({
   position: "relative",
   width: "100%",
   maxWidth: 400,
@@ -66,7 +66,7 @@ const Search = ({ onSearchChange }) => {
   };
 
   const debouncedFetchSuggestions = useCallback(
-    debounce(fetchSuggestions, 300),
+    debounce(fetchSuggestions, 500),
     []
   );
 
@@ -139,6 +139,7 @@ const Search = ({ onSearchChange }) => {
         onChange={handleInputChange}
         onKeyDown={handleKeyDown}
         onFocus={() => setShowSuggestions(true)}
+        autoComplete="off"
         placeholder="Search for cities"
         variant="outlined"
         sx={{ input: { color: "white" } }}
