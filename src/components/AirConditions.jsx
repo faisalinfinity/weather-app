@@ -1,11 +1,13 @@
-import React from 'react';
-import ErrorBox from './ErrorBox';
-import AirConditionsItem from './AirConditionsItem';
-import Layout from './Layout';
-
+import React from "react";
+import ErrorBox from "./ErrorBox";
+import AirConditionsItem from "./AirConditionsItem";
+import Layout from "./Layout";
+import { celsiusToFahrenheit } from "../utils/data";
+import { useTemperature } from "../context/ToggleTemperature";
 const TodayWeatherAirConditions = ({ data }) => {
+  const { isCelsius } = useTemperature();
   const noDataProvided =
-    !data || Object.keys(data).length === 0 || data.cod === '404';
+    !data || Object.keys(data).length === 0 || data.cod === "404";
 
   let content = <ErrorBox flex="1" type="error" />;
 
@@ -14,7 +16,11 @@ const TodayWeatherAirConditions = ({ data }) => {
       <>
         <AirConditionsItem
           title="Real Feel"
-          value={`${Math.round(data.main.feels_like)} °C`}
+          value={
+            isCelsius
+              ? `${Math.round(data.main.feels_like)} °C`
+              : `${Math.round(celsiusToFahrenheit(data.main.feels_like))} °F`
+          }
           type="temperature"
         />
         <AirConditionsItem
@@ -39,7 +45,7 @@ const TodayWeatherAirConditions = ({ data }) => {
       title="AIR CONDITIONS"
       content={content}
       mb="1rem"
-      sx={{ marginTop: '2.9rem' }}
+      sx={{ marginTop: "2.9rem" }}
     />
   );
 };

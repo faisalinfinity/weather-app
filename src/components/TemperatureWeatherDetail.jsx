@@ -1,7 +1,10 @@
 import { Box, Typography } from '@mui/material';
 import React from 'react';
+import { useTemperature } from '../context/ToggleTemperature';
+import { celsiusToFahrenheit } from '../utils/data';
 
 const TemperatureWeatherDetail = (props) => {
+  const { isCelsius } = useTemperature();
   return (
     <Box
       sx={{
@@ -26,7 +29,7 @@ const TemperatureWeatherDetail = (props) => {
           fontFamily: 'Poppins',
         }}
       >
-        {Math.round(props.temperature)} °C
+       {isCelsius ? Math.round(props.temperature) +" °C" : Math.round(celsiusToFahrenheit(props.temperature))+" °F"}
       </Typography>
       <Typography
         variant="h4"

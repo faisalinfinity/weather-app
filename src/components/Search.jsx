@@ -1,24 +1,34 @@
 import React, { useState, useEffect, useCallback, useRef } from "react";
-import { TextField, Paper, List, ListItem, ListItemText, IconButton, CircularProgress } from "@mui/material";
+import {
+  TextField,
+  Paper,
+  List,
+  ListItem,
+  ListItemText,
+  IconButton,
+  CircularProgress,
+} from "@mui/material";
 import { styled } from "@mui/material/styles";
 import SearchIcon from "@mui/icons-material/Search";
 import { fetchCities } from "../api/OpenWeatherService";
 
-const SearchContainer = styled('div')(({ theme }) => ({
-  position: 'relative',
-  width: '100%',
+const SearchContainer = styled("div")(({ theme }) => ({
+  position: "relative",
+  width: "100%",
   maxWidth: 400,
-  margin: '0 auto',
+  margin: "0 auto",
+  color: "white",
+  padding: "5px 5px 5px 5px",
 }));
 
 const SuggestionsContainer = styled(Paper)(({ theme }) => ({
-  position: 'absolute',
+  position: "absolute",
   zIndex: 1,
   marginTop: theme.spacing(1),
   left: 0,
   right: 0,
   maxHeight: 200,
-  overflow: 'auto',
+  overflow: "auto",
 }));
 
 const Search = ({ onSearchChange }) => {
@@ -55,7 +65,10 @@ const Search = ({ onSearchChange }) => {
     }
   };
 
-  const debouncedFetchSuggestions = useCallback(debounce(fetchSuggestions, 300), []);
+  const debouncedFetchSuggestions = useCallback(
+    debounce(fetchSuggestions, 300),
+    []
+  );
 
   useEffect(() => {
     if (inputValue === "") {
@@ -67,7 +80,10 @@ const Search = ({ onSearchChange }) => {
 
   useEffect(() => {
     const handleClickOutside = (event) => {
-      if (suggestionsRef.current && !suggestionsRef.current.contains(event.target)) {
+      if (
+        suggestionsRef.current &&
+        !suggestionsRef.current.contains(event.target)
+      ) {
         setShowSuggestions(false);
       }
     };
@@ -92,7 +108,7 @@ const Search = ({ onSearchChange }) => {
   const handleKeyDown = (e) => {
     if (e.key === "ArrowDown") {
       e.preventDefault();
-      setSelectedIndex((prevIndex) => 
+      setSelectedIndex((prevIndex) =>
         prevIndex < suggestions.length - 1 ? prevIndex + 1 : prevIndex
       );
     } else if (e.key === "ArrowUp") {
@@ -125,6 +141,7 @@ const Search = ({ onSearchChange }) => {
         onFocus={() => setShowSuggestions(true)}
         placeholder="Search for cities"
         variant="outlined"
+        sx={{ input: { color: "white" } }}
         InputProps={{
           endAdornment: (
             <>
@@ -145,7 +162,7 @@ const Search = ({ onSearchChange }) => {
                 onClick={() => handleSuggestionClick(suggestion)}
                 selected={index === selectedIndex}
                 button
-                sx={{cursor: 'pointer'}}
+                sx={{ cursor: "pointer" }}
               >
                 <ListItemText primary={suggestion.label} />
               </ListItem>

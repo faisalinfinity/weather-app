@@ -34,14 +34,14 @@ export function getMostFrequentWeather(arr) {
 
 export const descriptionToIconName = (desc, descriptions_list) => {
   let iconName = descriptions_list.find((item) => item.description === desc);
-  return iconName.icon || 'unknown';
+  return iconName.icon || "unknown";
 };
 
 export const getWeekForecastWeather = (response, descriptions_list) => {
   let foreacast_data = [];
   let descriptions_data = [];
 
-  if (!response || Object.keys(response).length === 0 || response.cod === '404')
+  if (!response || Object.keys(response).length === 0 || response.cod === "404")
     return [];
   else
     response?.list.slice().map((item, idx) => {
@@ -60,7 +60,7 @@ export const getWeekForecastWeather = (response, descriptions_list) => {
       return { idx, item };
     });
 
-  const groupByDate = groupBy('date');
+  const groupByDate = groupBy("date");
   let grouped_forecast_data = groupByDate(foreacast_data);
   let grouped_forecast_descriptions = groupByDate(descriptions_data);
 
@@ -113,16 +113,16 @@ export const getTodayForecastWeather = (
 ) => {
   let all_today_forecasts = [];
 
-  if (!response || Object.keys(response).length === 0 || response.cod === '404')
+  if (!response || Object.keys(response).length === 0 || response.cod === "404")
     return [];
   else
     response?.list.slice().map((item) => {
       if (item.dt_txt.startsWith(current_date.substring(0, 10))) {
         if (item.dt > current_datetime) {
           all_today_forecasts.push({
-            time: item.dt_txt.split(' ')[1].substring(0, 5),
+            time: item.dt_txt.split(" ")[1].substring(0, 5),
             icon: item.weather[0].icon,
-            temperature: Math.round(item.main.temp) + ' °C',
+            temperature: Math.round(item.main.temp) + " °C",
           });
         }
       }
@@ -135,3 +135,10 @@ export const getTodayForecastWeather = (
     return all_today_forecasts.slice(-6);
   }
 };
+
+export function celsiusToFahrenheit(celsius) {
+  if (typeof celsius == "string") {
+    celsius = +celsius.split(" ")[0];
+  }
+  return (+celsius * 9) / 5 + 32;
+}
