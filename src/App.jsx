@@ -79,14 +79,13 @@ const App = () => {
   }, []);
 
   const renderContent = () => {
-    console.log(weatherData);
     if (isLoading) return <LoadingMessage />;
     if (error)
       return (
         <ErrorBox margin="3rem auto" flex="inherit" errorMessage={error} />
       );
     if (weatherData.todayWeather)
-      return <WeatherContent  weatherData={weatherData} />;
+      return <WeatherContent weatherData={weatherData} />;
     return <WelcomeMessage />;
   };
 
@@ -146,16 +145,14 @@ const WelcomeMessage = () => (
 
 const WeatherContent = ({ weatherData }) => (
   <React.Fragment>
-   
     <Grid item xs={12} md={6}>
       <TodayWeather
         data={weatherData.todayWeather}
         forecastList={weatherData.todayForecast}
-        
       />
     </Grid>
     <Grid item xs={12} md={6}>
-      <WeeklyForecast data={weatherData.weekForecast}  />
+      <WeeklyForecast data={weatherData.weekForecast} />
     </Grid>
   </React.Fragment>
 );

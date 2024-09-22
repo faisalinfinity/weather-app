@@ -1,12 +1,12 @@
-import { Grid } from '@mui/material';
-import React from 'react';
-import AirConditions from './AirConditions';
-import DailyForecast from './DailyForecast';
-import Details from './Details';
+import { Grid } from "@mui/material";
+import React from "react";
+import AirConditions from "./AirConditions";
+import DailyForecast from "./DailyForecast";
+import Details from "./Details";
 
 const TodayWeather = ({ data, forecastList }) => {
   return (
-    <Grid container sx={{ padding: '3rem 0rem 0rem' }}>
+    <Grid container sx={{ padding: "3rem 0rem 0rem" }}>
       <Details data={data} />
       <AirConditions data={data} />
       <DailyForecast data={data} forecastList={forecastList} />
@@ -14,4 +14,9 @@ const TodayWeather = ({ data, forecastList }) => {
   );
 };
 
-export default TodayWeather;
+export default React.memo(TodayWeather, (prevProps, nextProps) => {
+  return (
+    prevProps.data === nextProps.data &&
+    prevProps.forecastList === nextProps.forecastList
+  );
+});

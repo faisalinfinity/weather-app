@@ -15,7 +15,7 @@ const StyledSwitch = styled(Switch)(({ theme }) => ({
       color: "#fff",
       transform: "translateX(22px)",
       "& .MuiSwitch-thumb:before": {
-        content: `"°C"`, // Celsius symbol for the thumb
+        content: `"°C"`, 
       },
       "& + .MuiSwitch-track": {
         opacity: 1,
@@ -28,7 +28,7 @@ const StyledSwitch = styled(Switch)(({ theme }) => ({
     width: 32,
     height: 32,
     "&:before": {
-      content: `"°F"`, // Fahrenheit symbol for the thumb
+      content: `"°F"`,
       position: "absolute",
       width: "100%",
       height: "100%",
